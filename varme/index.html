@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bootstrap demo</title>
+  <link href="bootstrap.min.css" rel="stylesheet">
+  <!--
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    -->
+</head>
+
+<body>
+  <h1>Hello, world!</h1>
+  <div class="container">
+    <canvas id="myChart"></canvas>
+  </div>
+
+  <script src="chart.umd.min.js"></script>
+  <script src="chartjs-plugin-annotation.min.js"></script>
+  <script src="https://unpkg.com/mathjs/lib/browser/math.js"></script>
+  <!--
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+-->
+
+  <script>
+    const ctx = document.getElementById('myChart');
+
+    const startGa = 0;
+    const startFv = 25000;
+    const startVp = 140000;
+
+    const yearlyGa = 16000;
+    const yearlyFv = 13000;
+    const yearlyVp = 4000;
+
+    const keys = [...Array(20).keys()];
+
+    //const dataGa = keys.map(k => startGa + yearlyGa * k);
+    //const dataFv = keys.map(k => startFv + yearlyFv * k);
+    //const dataVp = keys.map(k => startVp + yearlyVp * k);
+
+    const dataGa = [0, 35000, 45000, 55000, 65000, 75000, 85000, 95000, 105000, 115000, 125000, 135000, 145000, 155000, 165000, 175000, 185000, 195000, 205000, 215000, 425000];
+    const dataFv = [25000, 35000, 45000, 55000, 65000, 75000, 85000, 95000, 105000, 115000, 125000, 135000, 145000, 155000, 165000, 175000, 185000, 195000, 205000, 215000, 225000];
+    const dataVp = [140000, 143000, 146000, 149000, 152000, 155000, 158000, 161000, 164000, 167000, 170000, 173000, 176000, 179000, 182000, 185000, 188000, 191000, 194000, 197000, 200000];
+
+    const intersection = math.intersect([0, datafv[0]], [19, datafv[19]], [0, datavp[0]], [19, datavp[19]]);
+
+    let annotation = {};
+
+    if (intersection) {
+      annotation = {
+        type: 'line',
+        borderColor: 'black',
+        borderWidth: 1,
+        display: (ctx) => ctx.chart.isDatasetVisible(1),
+        label: {
+          display: true,
+          content: Math.round(intersection[1]),
+          position: 'start'
+        },
+        scaleID: 'x',
+        value: intersection[0]
+      };
+    }
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [...Array(20).keys()],
+        datasets: [{
+          label: 'Gas',
+          data: dataGa,
+          fill: false,
+          borderColor: 'red',
+          tension: 0.1
+        },{
+          label: 'Fjernvame',
+          data: dataFv,
+          fill: false,
+          borderColor: 'darkgreen',
+          tension: 0.1
+        }, {
+          label: 'Luft til vand varmepumpe',
+          data: dataVp,
+          fill: false,
+          borderColor: 'green',
+          tension: 0.1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          annotation: {
+            annotations: {
+              annotation
+            }
+          }
+        }
+      }
+    });
+  </script>
+
+</body>
+
+</html>
